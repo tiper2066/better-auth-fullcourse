@@ -18,12 +18,17 @@ import {
     FormMessage,
 } from '@/components/ui/form';
 import { toast } from 'sonner';
-// import { registerUser } from "@/actions/register";
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { AppLogoIcon } from '../common/app-logo-icon';
 import { Icons } from '../common/icons';
-import { registerUser } from '@/actions/user'; // ********************** registerUser 서버액션 함수
+import { registerUser } from '@/actions/users'; //  registerUser 서버액션 함수
+
+type RegisterUserResponse = {
+    success: boolean;
+    error?: string;
+    status?: string;
+};
 
 // Define schema for form validation with Zod
 const registerSchema = z.object({
@@ -59,9 +64,9 @@ export default function SignUp() {
         console.log(data);
         setIsSubmitting(true);
 
-        // ************************************** 주석을 풀고 수정함
+        //  주석을 풀고 수정함
         try {
-            const result = await registerUser(data);
+            const result: RegisterUserResponse = await registerUser(data);
             if (result.success) {
                 toast.success('Success!', {
                     description: '사용자의 계정이 성공적으로 생성되었습니다.',
@@ -69,9 +74,17 @@ export default function SignUp() {
                 // 회원가입에 성공하면 dashboard 페이지로 이동
                 router.push('/dashboard');
             } else {
-                toast.error('Error', {
-                    description: result.error, // 일반 에러 메시지를 토스트로 출력
-                });
+                // ******************************************** 에러 처리 추가
+                if (result.status === 'UNPROCESSABLE_ENTITY') {
+                    toast.error('Email Exists', {
+                        description: result.error,
+                    });
+                } else {
+                    toast.error('Error', {
+                        description: result.error,
+                    });
+                }
+                // ******************************************** 에러 처리
             }
         } catch (error) {
             toast.error('Error', {
@@ -84,45 +97,45 @@ export default function SignUp() {
     };
 
     return (
-        <section className='flex min-h-screen bg-zinc-50 px-4 py-16 md:py-32 dark:bg-transparent'>
-            <div className='bg-card m-auto h-fit w-full max-w-md rounded-[calc(var(--radius)+.125rem)] border p-0.5 shadow-md dark:[--color-muted:var(--color-zinc-900)]'>
-                <div className='p-8 pb-6'>
+        <section className="flex min-h-screen bg-zinc-50 px-4 py-16 md:py-32 dark:bg-transparent">
+            <div className="bg-card m-auto h-fit w-full max-w-md rounded-[calc(var(--radius)+.125rem)] border p-0.5 shadow-md dark:[--color-muted:var(--color-zinc-900)]">
+                <div className="p-8 pb-6">
                     <div>
-                        <Link href='/' aria-label='go home'>
-                            <AppLogoIcon className='h-10 fill-current text-black sm:h-12' />
+                        <Link href="/" aria-label="go home">
+                            <AppLogoIcon className="h-10 fill-current text-black sm:h-12" />
                         </Link>
-                        <h1 className='text-title mb-1 mt-4 text-xl font-semibold'>
+                        <h1 className="text-title mb-1 mt-4 text-xl font-semibold">
                             Create a Tailark Account
                         </h1>
-                        <p className='text-sm'>
+                        <p className="text-sm">
                             Welcome! Create an account to get started
                         </p>
                     </div>
 
-                    <div className='mt-6 grid grid-cols-2 gap-3'>
-                        <Button type='button' variant='outline'>
+                    <div className="mt-6 grid grid-cols-2 gap-3">
+                        <Button type="button" variant="outline">
                             <Icons.google />
                             <span>Google</span>
                         </Button>
-                        <Button type='button' variant='outline'>
+                        <Button type="button" variant="outline">
                             <Icons.gitHub />
                             <span>Github</span>
                         </Button>
                     </div>
 
-                    <hr className='my-4 border-dashed' />
+                    <hr className="my-4 border-dashed" />
 
                     <Form {...form}>
                         <form
                             onSubmit={form.handleSubmit(onSubmit)}
-                            className='space-y-5'
+                            className="space-y-5"
                         >
-                            <div className='grid grid-cols-2 gap-3'>
+                            <div className="grid grid-cols-2 gap-3">
                                 <FormField
                                     control={form.control}
-                                    name='firstName'
+                                    name="firstName"
                                     render={({ field }) => (
-                                        <FormItem className='space-y-2'>
+                                        <FormItem className="space-y-2">
                                             <FormLabel>Firstname</FormLabel>
                                             <FormControl>
                                                 <Input {...field} />
@@ -134,9 +147,9 @@ export default function SignUp() {
 
                                 <FormField
                                     control={form.control}
-                                    name='lastName'
+                                    name="lastName"
                                     render={({ field }) => (
-                                        <FormItem className='space-y-2'>
+                                        <FormItem className="space-y-2">
                                             <FormLabel>Lastname</FormLabel>
                                             <FormControl>
                                                 <Input {...field} />
@@ -149,12 +162,12 @@ export default function SignUp() {
 
                             <FormField
                                 control={form.control}
-                                name='email'
+                                name="email"
                                 render={({ field }) => (
-                                    <FormItem className='space-y-2'>
+                                    <FormItem className="space-y-2">
                                         <FormLabel>Email</FormLabel>
                                         <FormControl>
-                                            <Input type='email' {...field} />
+                                            <Input type="email" {...field} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -163,12 +176,12 @@ export default function SignUp() {
 
                             <FormField
                                 control={form.control}
-                                name='password'
+                                name="password"
                                 render={({ field }) => (
-                                    <FormItem className='space-y-2'>
+                                    <FormItem className="space-y-2">
                                         <FormLabel>Password</FormLabel>
                                         <FormControl>
-                                            <Input type='password' {...field} />
+                                            <Input type="password" {...field} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -176,8 +189,8 @@ export default function SignUp() {
                             />
 
                             <Button
-                                type='submit'
-                                className='w-full'
+                                type="submit"
+                                className="w-full"
                                 disabled={isSubmitting}
                             >
                                 {isSubmitting
@@ -188,11 +201,11 @@ export default function SignUp() {
                     </Form>
                 </div>
 
-                <div className='bg-muted rounded-(--radius) border p-3'>
-                    <p className='text-accent-foreground text-center text-sm'>
+                <div className="bg-muted rounded-(--radius) border p-3">
+                    <p className="text-accent-foreground text-center text-sm">
                         Have an account?
-                        <Button asChild variant='link' className='px-2 ml-3'>
-                            <Link href='/login'>Sign In</Link>
+                        <Button asChild variant="link" className="px-2 ml-3">
+                            <Link href="/login">Sign In</Link>
                         </Button>
                     </p>
                 </div>
