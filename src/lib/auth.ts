@@ -22,10 +22,43 @@ export const auth = betterAuth({
         github: {
             clientId: process.env.GITHUB_CLIENT_ID as string,
             clientSecret: process.env.GITHUB_CLIENT_SECRET as string,
+            // ********************************************************************** 추가
+            mapProfileToUser: (profile) => {
+                return {
+                    firstName: profile.name.split(' ')[0],
+                    lastName: profile.name.split(' ')[1],
+                };
+            },
         },
         google: {
             clientId: process.env.GOOGLE_CLIENT_ID as string,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+            // ********************************************************************** 추가
+            mapProfileToUser: (profile) => {
+                return {
+                    firstName: profile.given_name,
+                    lastName: profile.family_name,
+                };
+            },
+        },
+    },
+    // *************************************************** user 테이블에 필드를 추가한다.
+    user: {
+        additionalFields: {
+            role: {
+                type: 'string',
+                required: false,
+                defaultValue: 'USER', // schema 에 설정한 role 이름
+                input: false, // 사용자가 입력하도록 허용안함
+            },
+            firstName: {
+                type: 'string',
+                required: true, // 필수 입력
+            },
+            lastName: {
+                type: 'string',
+                required: true, // 필수 입력
+            },
         },
     },
     plugins: [nextCookies()],

@@ -23,6 +23,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { AppLogoIcon } from '../common/app-logo-icon';
 import { Icons } from '../common/icons';
+import { registerUser } from '@/actions/user'; // ********************** registerUser 서버액션 함수
 
 // Define schema for form validation with Zod
 const registerSchema = z.object({
@@ -58,22 +59,23 @@ export default function SignUp() {
         console.log(data);
         setIsSubmitting(true);
 
+        // ************************************** 주석을 풀고 수정함
         try {
-            // const result = await registerUser(data);
-            // if (result.success) {
-            //   toast.success("Success!", {
-            //     description: result.message,
-            //   });
-            //   // Optional: redirect to login page
-            //   router.push("/dashboard");
-            // } else {
-            //   toast.error("Error", {
-            //     description: result.message,
-            //   });
-            // }
+            const result = await registerUser(data);
+            if (result.success) {
+                toast.success('Success!', {
+                    description: '사용자의 계정이 성공적으로 생성되었습니다.',
+                });
+                // 회원가입에 성공하면 dashboard 페이지로 이동
+                router.push('/dashboard');
+            } else {
+                toast.error('Error', {
+                    description: result.error, // 일반 에러 메시지를 토스트로 출력
+                });
+            }
         } catch (error) {
             toast.error('Error', {
-                description: 'Something went wrong. Please try again.',
+                description: '서버에 문제가 발생했습니다. 다시 시도해 보세요.',
             });
             console.log(error);
         } finally {
