@@ -24,21 +24,22 @@ import {
     SidebarMenuItem,
     useSidebar,
 } from '@/components/ui/sidebar';
-import { useRouter } from 'next/navigation'; // ************************** next.js useRouter 함수
-import { signOut } from '@/lib/auth-client'; // ************************** better-auth signOut 함수
+import { useRouter } from 'next/navigation'; //  next.js useRouter 함수
+import { signOut } from '@/lib/auth-client'; //  better-auth signOut 함수
 
 // props 타입 선언
 export type NavUserProps = {
     name: string;
     email: string;
     avatar: string;
+    role?: string; // ************************* role 추가
 };
 // user Props 전달 받는 함수
 export function NavUser({ user }: { user: NavUserProps }) {
     const { isMobile } = useSidebar();
-    const router = useRouter(); // **************************  객체 생성
+    const router = useRouter(); //   객체 생성
 
-    // ************************************* logout 핸들러 함수
+    //  logout 핸들러 함수
     const handleLogOut = async () => {
         try {
             await signOut({
@@ -59,51 +60,51 @@ export function NavUser({ user }: { user: NavUserProps }) {
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <SidebarMenuButton
-                            size="lg"
-                            className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+                            size='lg'
+                            className='data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground'
                         >
-                            <Avatar className="h-8 w-8 rounded-lg grayscale">
+                            <Avatar className='h-8 w-8 rounded-lg grayscale'>
                                 <AvatarImage
                                     src={user.avatar}
                                     alt={user.name}
                                 />
-                                <AvatarFallback className="rounded-lg">
+                                <AvatarFallback className='rounded-lg'>
                                     CN
                                 </AvatarFallback>
                             </Avatar>
-                            <div className="grid flex-1 text-left text-sm leading-tight">
-                                <span className="truncate font-medium">
+                            <div className='grid flex-1 text-left text-sm leading-tight'>
+                                <span className='truncate font-medium'>
                                     {user.name}
                                 </span>
-                                <span className="text-muted-foreground truncate text-xs">
+                                <span className='text-muted-foreground truncate text-xs'>
                                     {user.email}
                                 </span>
                             </div>
-                            <IconDotsVertical className="ml-auto size-4" />
+                            <IconDotsVertical className='ml-auto size-4' />
                         </SidebarMenuButton>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent
-                        className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
+                        className='w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg'
                         side={isMobile ? 'bottom' : 'right'}
-                        align="end"
+                        align='end'
                         sideOffset={4}
                     >
-                        <DropdownMenuLabel className="p-0 font-normal">
-                            <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                                <Avatar className="h-8 w-8 rounded-lg">
+                        <DropdownMenuLabel className='p-0 font-normal'>
+                            <div className='flex items-center gap-2 px-1 py-1.5 text-left text-sm'>
+                                <Avatar className='h-8 w-8 rounded-lg'>
                                     <AvatarImage
                                         src={user.avatar}
                                         alt={user.name}
                                     />
-                                    <AvatarFallback className="rounded-lg">
+                                    <AvatarFallback className='rounded-lg'>
                                         CN
                                     </AvatarFallback>
                                 </Avatar>
-                                <div className="grid flex-1 text-left text-sm leading-tight">
-                                    <span className="truncate font-medium">
+                                <div className='grid flex-1 text-left text-sm leading-tight'>
+                                    <span className='truncate font-medium'>
                                         {user.name}
                                     </span>
-                                    <span className="text-muted-foreground truncate text-xs">
+                                    <span className='text-muted-foreground truncate text-xs'>
                                         {user.email}
                                     </span>
                                 </div>
@@ -125,7 +126,7 @@ export function NavUser({ user }: { user: NavUserProps }) {
                             </DropdownMenuItem>
                         </DropdownMenuGroup>
                         <DropdownMenuSeparator />
-                        {/* ******************************** 클릭 핸들러 적용 */}
+                        {/*  클릭 핸들러 적용 */}
                         <DropdownMenuItem onClick={handleLogOut}>
                             <IconLogout />
                             Log out

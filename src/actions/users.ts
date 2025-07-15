@@ -4,7 +4,9 @@
 import { LoginFormValues } from '@/components/auth/Login';
 import { RegisterFormValues } from '@/components/auth/SignUp';
 import { auth } from '@/lib/auth';
-import { APIError } from 'better-auth'; // ***************** better-auth APIError
+import { APIError } from 'better-auth/api'; // ***************** better-auth APIError
+
+// ********************************** RegisterFormValues 타입 정의
 
 // 회원 등록 서버액션 함수 - form 데이터를 받음
 export async function registerUser(data: RegisterFormValues) {
@@ -41,6 +43,13 @@ export async function registerUser(data: RegisterFormValues) {
                 };
             }
         }
+
+        // allback return 추가: 모든 경로에서 값 반환 보장
+        return {
+            success: false,
+            data: null,
+            error: 'Something went wrong',
+        };
     }
 }
 

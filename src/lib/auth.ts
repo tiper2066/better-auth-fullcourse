@@ -24,9 +24,16 @@ export const auth = betterAuth({
             clientSecret: process.env.GITHUB_CLIENT_SECRET as string,
             // ********************************************************************** 추가
             mapProfileToUser: (profile) => {
+                // profile을 로그로 확인해 실제 데이터 구조 파악 (디버깅용)
+                // console.log('GitHub Profile:', profile);
+
+                // name이 null이거나 문자열이 아닌 경우 처리
+                const name = profile.name || profile.login || 'Unknown';
+                const nameParts = name.split(' ').filter(Boolean); // 공백으로 나누고 빈 문자열 제거
+
                 return {
-                    firstName: profile.name.split(' ')[0],
-                    lastName: profile.name.split(' ')[1],
+                    firstName: nameParts[0] || 'GitHub', // 첫 번째 이름 또는 기본값
+                    lastName: nameParts[1] || 'User', // 두 번째 이름 또는 기본값
                 };
             },
         },

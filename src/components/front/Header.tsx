@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react';
 import { Dialog, DialogPanel } from '@headlessui/react';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
+import { useSession } from '@/lib/auth-client'; // ************************** better-auth useSession 함수
+import { Button } from '../ui/button';
 
 const navigation = [
     { name: 'Solutions', href: '#' },
@@ -14,6 +16,7 @@ const navigation = [
 const Header = () => {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
+    const { data: session } = useSession(); // ************************** better-auth useSession 객체 생성
 
     // Add scroll detection for navbar animation
     useEffect(() => {
@@ -81,20 +84,32 @@ const Header = () => {
                         </a>
                     ))}
                 </div>
-                <div className='hidden lg:flex lg:flex-1 lg:justify-end lg:gap-x-4'>
-                    <a
-                        href='#'
-                        className='text-sm font-medium text-gray-900 hover:text-indigo-600 transition-colors flex items-center'
-                    >
-                        Log in
-                    </a>
-                    <a
-                        href='#'
-                        className='text-sm font-medium px-4 py-2 bg-indigo-50 text-indigo-600 rounded-full hover:bg-indigo-100 transition-colors'
-                    >
-                        Sign up free
-                    </a>
-                </div>
+                {session ? (
+                    <div className=''>
+                        <Button
+                            className='text-blue-600'
+                            variant='ghost'
+                            asChild
+                        >
+                            <Link href='/dashboard'>Dashboard</Link>
+                        </Button>
+                    </div>
+                ) : (
+                    <div className='hidden lg:flex lg:flex-1 lg:justify-end lg:gap-x-4'>
+                        <a
+                            href='/login'
+                            className='text-sm font-medium text-gray-900 hover:text-indigo-600 transition-colors flex items-center'
+                        >
+                            Log in
+                        </a>
+                        <a
+                            href='/signup'
+                            className='text-sm font-medium px-4 py-2 bg-indigo-50 text-indigo-600 rounded-full hover:bg-indigo-100 transition-colors'
+                        >
+                            Sign up free
+                        </a>
+                    </div>
+                )}
             </nav>
             <Dialog
                 open={mobileMenuOpen}
